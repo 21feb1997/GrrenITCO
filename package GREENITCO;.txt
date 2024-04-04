@@ -1,0 +1,52 @@
+package GREENITCO;
+
+import org.testng.annotations.Test;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.testng.Assert;
+import org.testng.annotations.DataProvider;
+
+public class ITM2 {
+  @Test(dataProvider = "Credentials")
+  public void VerifyLoginCredentials(String scenario, String Username)
+  {
+	  System.setProperty("webdriver.chrome.drive", "C:\\selenium\\chromedriver.exe");
+	  WebDriver wd=new ChromeDriver();
+	  wd.manage().window().maximize();
+	  wd.get("https://itassetmanagementsoftware.com/rolepermission/admin/login");
+	  
+	  wd.findElement(By.id("username")).sendKeys("abc");
+     
+		wd.findElement(By.id("btnContinue")).click();
+		
+		if(scenario.equals("wrongusername"))
+		{
+			String errorMsg= wd.findElement(By.className("validateUserMsg")).getText();
+			Assert.assertEquals(errorMsg, "Please enter valid username to continue");
+			
+			
+		}
+		else if(scenario.equals("blankusername"))
+		{
+			String errorMsg= wd.findElement(By.className("error")).getText();
+			Assert.assertEquals(errorMsg,"This field is required.");
+			
+		}
+		else
+		{
+			System.out.println("Successfully logged in");
+		}
+		
+  }
+
+  @DataProvider(name="credentials")
+  public Object[][] getData() {
+    return new Object[][] {
+      new Object[] { "wrongusername", "abcd" },
+      new Object[] { "blankusername", " " },
+      
+  };
+}
+}
